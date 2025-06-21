@@ -1,21 +1,38 @@
 import { useNavigation } from '@react-navigation/native';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import FastImage from 'react-native-fast-image';
 
 const Splash = () => {
-  const [isGo, setIsGo] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
-    const checkToken = async () => {
-      setTimeout(() => {
-        navigation.replace('AdminTabs');
-        setIsGo(false);
-      }, 3000);
+    const checkAuthAndNavigate = async () => {
+      try {
+        const token = await AsyncStorage.getItem('token');
+
+        if (!token) {
+          setTimeout(() => navigation.replace('Login'), 2000);
+          return;
+        }
+
+        const role = await AsyncStorage.getItem('role'); // or decode from token
+        setTimeout(() => {
+          if (role === 'student') {
+            navigation.replace('UserTabs');
+          } else {
+            navigation.replace('AdminTabs');
+          }
+        }, 2000);
+
+      } catch (error) {
+        console.error('Error checking auth:', error);
+        navigation.replace('Login');
+      }
     };
 
-    checkToken();
+    checkAuthAndNavigate();
   }, [navigation]);
 
   return (
@@ -43,7 +60,7 @@ const styles = StyleSheet.create({
     width: 100,
     height: 100,
     marginBottom: 20,
-    marginTop:10
+    marginTop: 10,
   },
   title: {
     fontSize: 36,

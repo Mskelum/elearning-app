@@ -6,6 +6,8 @@ import Icon from "react-native-vector-icons/FontAwesome";
 import Dashboard from "../adminScreens/Dashboard";
 import Home from "../userScreens/Home";
 import Splash from "../components/Splash";
+import Login from "../auth/Login";
+import Register from "../auth/Register";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -56,6 +58,8 @@ const AppHome = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Splash">
         <Stack.Screen name="Splash" component={Splash} options={{ headerShown: false }} />
+        <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+        <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
         <Stack.Screen
           name="UserTabs"
           component={UserTabs}
