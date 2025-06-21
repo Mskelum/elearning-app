@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 
 // Register
 router.post('/register', async (req, res) => {
-    const { name, email, password } = req.body; 
+    const { name, role, email, password } = req.body; 
 
     try {
         let user = await User.findOne({ email });
@@ -14,7 +14,7 @@ router.post('/register', async (req, res) => {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        user = new User({ name, email, password: hashedPassword });
+        user = new User({ name, role, email, password: hashedPassword });
         await user.save();
 
         res.status(201).json({ msg: 'User registered successfully' });
@@ -35,7 +35,7 @@ router.post('/login', async (req, res) => {
         if (!isMatch) return res.status(400).json({ msg: 'Invalid credentials' });
 
         const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
-        res.json({ token, user: { id: user._id, name: user.name, email: user.email } });
+        res.json({ token, user: { id: user._id, name: user.name, role: user.role, email: user.email } });
     } catch (err) {
         res.status(500).send('Server error');
     }
